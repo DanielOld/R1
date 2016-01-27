@@ -47,6 +47,12 @@
 #include "nrf_delay.h"
 #include "bsp_btn_ble.h"
 
+#define __RING_SUPPORT__
+
+#if defined(__RING_SUPPORT__)
+#include "sensor_test.h"
+#endif
+
 #define IS_SRVC_CHANGED_CHARACT_PRESENT  1                                          /**< Include or not the service_changed characteristic. if not enabled, the server's database cannot be changed for the lifetime of the device*/
 
 #define DEVICE_NAME                      "Nordic_HRM"                               /**< Name of device. Will be included in the advertising data. */
@@ -62,8 +68,11 @@
 #define MIN_BATTERY_LEVEL                81                                         /**< Minimum simulated battery level. */
 #define MAX_BATTERY_LEVEL                100                                        /**< Maximum simulated battery level. */
 #define BATTERY_LEVEL_INCREMENT          1                                          /**< Increment between each simulated battery level measurement. */
-
+#if defined(__RING_SUPPORT__)
+#define HEART_RATE_MEAS_INTERVAL         APP_TIMER_TICKS(10, APP_TIMER_PRESCALER) /**< Heart rate measurement interval (ticks). */
+#else
 #define HEART_RATE_MEAS_INTERVAL         APP_TIMER_TICKS(1000, APP_TIMER_PRESCALER) /**< Heart rate measurement interval (ticks). */
+#endif
 #define MIN_HEART_RATE                   140                                        /**< Minimum heart rate as returned by the simulated measurement function. */
 #define MAX_HEART_RATE                   300                                        /**< Maximum heart rate as returned by the simulated measurement function. */
 #define HEART_RATE_INCREMENT             10                                         /**< Value by which the heart rate is incremented/decremented for each call to the simulated measurement function. */
@@ -74,9 +83,13 @@
 #define RR_INTERVAL_INCREMENT            1                                          /**< Value by which the RR interval is incremented/decremented for each call to the simulated measurement function. */
 
 #define SENSOR_CONTACT_DETECTED_INTERVAL APP_TIMER_TICKS(5000, APP_TIMER_PRESCALER) /**< Sensor Contact Detected toggle interval (ticks). */
-
+#if defined(__RING_SUPPORT__)
+#define MIN_CONN_INTERVAL                MSEC_TO_UNITS(10, UNIT_1_25_MS)           /**< Minimum acceptable connection interval (0.4 seconds). */
+#define MAX_CONN_INTERVAL                MSEC_TO_UNITS(100, UNIT_1_25_MS)           /**< Maximum acceptable connection interval (0.65 second). */
+#else
 #define MIN_CONN_INTERVAL                MSEC_TO_UNITS(400, UNIT_1_25_MS)           /**< Minimum acceptable connection interval (0.4 seconds). */
 #define MAX_CONN_INTERVAL                MSEC_TO_UNITS(650, UNIT_1_25_MS)           /**< Maximum acceptable connection interval (0.65 second). */
+#endif
 #define SLAVE_LATENCY                    0                                          /**< Slave latency. */
 #define CONN_SUP_TIMEOUT                 MSEC_TO_UNITS(4000, UNIT_10_MS)            /**< Connection supervisory timeout (4 seconds). */
 
@@ -183,6 +196,47 @@ static void battery_level_meas_timeout_handler(void * p_context)
 }
 
 
+
+#if defined(__RING_SUPPORT__)
+uint32_t ble_sensor_data_send(ble_hrs_t * p_hrs)
+{
+    uint32_t err_code;
+    uint8_t sensor_data[20];
+
+    // Send value if connected and notifying
+    if (p_hrs->conn_handle != BLE_CONN_HANDLE_INVALID)
+    {
+        uint16_t               len;
+        uint16_t               hvx_len;
+        ble_gatts_hvx_params_t hvx_params;
+
+        sensor_test(sensor_data);
+
+        len     = 6;
+        hvx_len = len;
+
+        memset(&hvx_params, 0, sizeof(hvx_params));
+
+        hvx_params.handle = p_hrs->hrm_handles.value_handle;
+        hvx_params.type   = BLE_GATT_HVX_NOTIFICATION;
+        hvx_params.offset = 0;
+        hvx_params.p_len  = &hvx_len;
+        hvx_params.p_data = sensor_data;
+
+        err_code = sd_ble_gatts_hvx(p_hrs->conn_handle, &hvx_params);
+        if ((err_code == NRF_SUCCESS) && (hvx_len != len))
+        {
+            err_code = NRF_ERROR_DATA_SIZE;
+        }
+    }
+    else
+    {
+        err_code = NRF_ERROR_INVALID_STATE;
+    }
+
+    return err_code;
+}
+#endif
 /**@brief Function for handling the Heart rate measurement timer timeout.
  *
  * @details This function will be called each time the heart rate measurement timer expires.
@@ -193,12 +247,25 @@ static void battery_level_meas_timeout_handler(void * p_context)
  */
 static void heart_rate_meas_timeout_handler(void * p_context)
 {
+#if !defined(__RING_SUPPORT__)
     static uint32_t cnt = 0;
+#endif
     uint32_t        err_code;
     uint16_t        heart_rate;
 
     UNUSED_PARAMETER(p_context);
 
+#if defined(__RING_SUPPORT__)
+    err_code = ble_sensor_data_send(&m_hrs);
+    if ((err_code != NRF_SUCCESS) &&
+        (err_code != NRF_ERROR_INVALID_STATE) &&
+        (err_code != BLE_ERROR_NO_TX_BUFFERS) &&
+        (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
+        )
+    {
+        APP_ERROR_HANDLER(err_code);
+    }
+#else
     heart_rate = (uint16_t)sensorsim_measure(&m_heart_rate_sim_state, &m_heart_rate_sim_cfg);
 
     cnt++;
@@ -216,6 +283,7 @@ static void heart_rate_meas_timeout_handler(void * p_context)
     // NOTE: An application will normally not do this. It is done here just for testing generation
     //       of messages without RR Interval measurements.
     m_rr_interval_enabled = ((cnt % 3) != 0);
+#endif
 }
 
 
@@ -542,17 +610,19 @@ static void application_timers_start(void)
     uint32_t err_code;
 
     // Start application timers.
+#if !defined(__RING_SUPPORT__)
     err_code = app_timer_start(m_battery_timer_id, BATTERY_LEVEL_MEAS_INTERVAL, NULL);
     APP_ERROR_CHECK(err_code);
-
+#endif
     err_code = app_timer_start(m_heart_rate_timer_id, HEART_RATE_MEAS_INTERVAL, NULL);
     APP_ERROR_CHECK(err_code);
-
+#if !defined(__RING_SUPPORT__)
     err_code = app_timer_start(m_rr_interval_timer_id, RR_INTERVAL_INTERVAL, NULL);
     APP_ERROR_CHECK(err_code);
 
     err_code = app_timer_start(m_sensor_contact_timer_id, SENSOR_CONTACT_DETECTED_INTERVAL, NULL);
     APP_ERROR_CHECK(err_code);
+#endif
 }
 
 
@@ -916,6 +986,9 @@ int main(void)
     services_init();
     sensor_simulator_init();
     conn_params_init();
+#if defined(__RING_SUPPORT__)
+    sensor_init();
+#endif
 
     // Start execution.
     application_timers_start();

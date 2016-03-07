@@ -76,6 +76,7 @@ static void init_LSM6DS3_GYRO(void)
 /* Init the Accelerometer */
 static void init_LSM6DS3_ACC(void)
 {
+#if 0 /*default*/
   /* Set ACC ODR  */
   response = LSM6DS3_ACC_GYRO_W_ODR_XL(LSM6DS3_ACC_GYRO_ODR_XL_104Hz);
   if(response==MEMS_ERROR) while(1); //manage here comunication error
@@ -87,6 +88,19 @@ static void init_LSM6DS3_ACC(void)
   /* BDU Enable */
   response = LSM6DS3_ACC_GYRO_W_BDU(LSM6DS3_ACC_GYRO_BDU_BLOCK_UPDATE);
   if(response==MEMS_ERROR) while(1); //manage here comunication error
+#else
+  /* Set ACC ODR  */
+  response = LSM6DS3_ACC_GYRO_W_ODR_XL(LSM6DS3_ACC_GYRO_ODR_XL_104Hz);
+  if(response==MEMS_ERROR) while(1); //manage here comunication error
+  
+  /* Set ACC full scale */
+  response = LSM6DS3_ACC_GYRO_W_FS_XL(LSM6DS3_ACC_GYRO_FS_XL_2g);
+  if(response==MEMS_ERROR) while(1); //manage here comunication error
+
+  /* BDU Enable */
+  response = LSM6DS3_ACC_GYRO_W_BDU(LSM6DS3_ACC_GYRO_BDU_CONTINUOS);
+  if(response==MEMS_ERROR) while(1); //manage here comunication error
+#endif
 }
 
 /* Test Acquisition of sensor samples */
@@ -235,7 +249,6 @@ static void Loop_Test_Wakeup(void)
   }
 }
 
-
 int sensor_init(void)
 {
   uint8_t WHO_AM_I = 0x0;
@@ -247,7 +260,8 @@ int sensor_init(void)
   /* Read WHO_AM_I  and check if device is really the LSM6DS3 */
   //I2C_BufferRead(&WHO_AM_I, 0xd6, 0x0f, 1);
   LSM6DS3_ACC_GYRO_R_WHO_AM_I(&WHO_AM_I);
-  if (WHO_AM_I != LSM6DS3_ACC_GYRO_WHO_AM_I) while(1); //manage here comunication error
+
+		if (WHO_AM_I != LSM6DS3_ACC_GYRO_WHO_AM_I) while(1); //manage here comunication error
 
   /* Soft Reset the LSM6DS3 device */
   LSM6DS3_ACC_GYRO_W_SW_RESET(LSM6DS3_ACC_GYRO_SW_RESET_RESET_DEVICE);
@@ -273,18 +287,31 @@ int sensor_init(void)
   /* Test Wakup */
   // Loop_Test_Wakeup();
 #endif
+{
+    int i;
+	static uint16_t m_data[256];
+
+    for(i = 0; i< 200; i++) {
+        do {
+            response =  LSM6DS3_ACC_GYRO_R_XLDA(&value_XL);
+            if(response==MEMS_ERROR) while(1); //manage here comunication error  
+        } while(LSM6DS3_ACC_GYRO_XLDA_DATA_AVAIL != value_XL);
+    	
+        LSM6DS3_ACC_GYRO_Get_GetAccData((uint8_t*)&m_data[i]);
+    }
+	
+}
   return 0;
 }
 
 void sensor_test(uint8_t* data)
 {
-    response =  LSM6DS3_ACC_GYRO_R_XLDA(&value_XL);
-    if(response==MEMS_ERROR) while(1); //manage here comunication error  
-    
-    if (LSM6DS3_ACC_GYRO_XLDA_DATA_AVAIL==value_XL)
-    {
-      LSM6DS3_ACC_GYRO_Get_GetAccData(data);
-    }
-}
+    do {
+        response =  LSM6DS3_ACC_GYRO_R_XLDA(&value_XL);
+        if(response==MEMS_ERROR) while(1); //manage here comunication error  
+    } while(LSM6DS3_ACC_GYRO_XLDA_DATA_AVAIL != value_XL);
+	
+    LSM6DS3_ACC_GYRO_Get_GetAccData(data);
+ }
 
 /******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/

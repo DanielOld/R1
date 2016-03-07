@@ -80,8 +80,8 @@ typedef enum {
 
 /************** I2C Address *****************/
 
-#define LSM6DS3_ACC_GYRO_I2C_ADDRESS         0xD6
-
+//#define LSM6DS3_ACC_GYRO_I2C_ADDRESS         0xD6
+#define LSM6DS3_ACC_GYRO_I2C_ADDRESS         0xD4
 /************** Who am I  *******************/
 
 #define LSM6DS3_ACC_GYRO_WHO_AM_I         0x69

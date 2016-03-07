@@ -51,6 +51,7 @@
 
 #if defined(__RING_SUPPORT__)
 #include "sensor_test.h"
+#include "lcd.h"
 #endif
 
 #define IS_SRVC_CHANGED_CHARACT_PRESENT  1                                          /**< Include or not the service_changed characteristic. if not enabled, the server's database cannot be changed for the lifetime of the device*/
@@ -249,10 +250,9 @@ static void heart_rate_meas_timeout_handler(void * p_context)
 {
 #if !defined(__RING_SUPPORT__)
     static uint32_t cnt = 0;
+    uint16_t        heart_rate;
 #endif
     uint32_t        err_code;
-    uint16_t        heart_rate;
-
     UNUSED_PARAMETER(p_context);
 
 #if defined(__RING_SUPPORT__)
@@ -988,6 +988,7 @@ int main(void)
     conn_params_init();
 #if defined(__RING_SUPPORT__)
     sensor_init();
+	lcd_init();
 #endif
 
     // Start execution.

@@ -47,11 +47,10 @@
 #include "nrf_delay.h"
 #include "bsp_btn_ble.h"
 
-#define __RING_SUPPORT__
-
 #if defined(__RING_SUPPORT__)
 #include "sensor_test.h"
 #include "lcd.h"
+#include "spi_flash.h"
 #endif
 
 #define IS_SRVC_CHANGED_CHARACT_PRESENT  1                                          /**< Include or not the service_changed characteristic. if not enabled, the server's database cannot be changed for the lifetime of the device*/
@@ -989,6 +988,7 @@ int main(void)
 #if defined(__RING_SUPPORT__)
     sensor_init();
 	lcd_init();
+	spi_flash_init();
 #endif
 
     // Start execution.

@@ -135,7 +135,7 @@
 #define SPI0_INSTANCE_INDEX 0
 #endif
 
-#define SPI1_ENABLED 0
+#define SPI1_ENABLED 1
 
 #if (SPI1_ENABLED == 1)
 #define SPI1_USE_EASY_DMA 0

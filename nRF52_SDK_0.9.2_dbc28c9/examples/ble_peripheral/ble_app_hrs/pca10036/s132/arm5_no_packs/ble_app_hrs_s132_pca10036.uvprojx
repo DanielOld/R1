@@ -371,7 +371,7 @@
             <vShortWch>0</vShortWch>
             <VariousControls>
               <MiscControls>--c99</MiscControls>
-              <Define>BLE_STACK_SUPPORT_REQD BOARD_PCA10036 S132 NRF52 SOFTDEVICE_PRESENT SWI_DISABLE0 CONFIG_NFCT_PINS_AS_GPIOS</Define>
+              <Define>BLE_STACK_SUPPORT_REQD BOARD_PCA10036 S132 NRF52 SOFTDEVICE_PRESENT SWI_DISABLE0 CONFIG_NFCT_PINS_AS_GPIOS __RING_SUPPORT__</Define>
               <Undefine></Undefine>
               <IncludePath>..\..\..\config;..\..\..\..\..\bsp;..\..\..\..\..\..\components\softdevice\s132\headers;..\..\..\..\..\..\components\softdevice\s132\headers\nrf52;..\..\..\..\..\..\components\libraries\uart;..\..\..\..\..\..\components\ble\common;..\..\..\..\..\..\components\libraries\sensorsim;..\..\..\..\..\..\components\ble\ble_services\ble_hrs;..\..\..\..\..\..\components\ble\ble_services\ble_dis;..\..\..\..\..\..\components\ble\ble_services\ble_bas;..\..\..\..\..\..\components\ble\ble_advertising;..\..\..\..\..\..\components\device;..\..\..\..\..\..\components\toolchain;..\..\..\..\..\..\components\drivers_nrf\hal;..\..\..\..\..\..\components\libraries\fifo;..\..\..\..\..\..\components\drivers_nrf\uart;..\..\..\..\..\..\components\drivers_nrf\config;..\..\..\..\..\..\components\libraries\util;..\..\..\..\..\..\components\drivers_nrf\common;..\..\..\..\..\..\components\libraries\button;..\..\..\..\..\..\components\drivers_nrf\gpiote;..\..\..\..\..\..\components\ble\device_manager;..\..\..\..\..\..\components\softdevice\common\softdevice_handler;..\..\..\..\..\..\components\libraries\timer;..\..\..\..\..\..\components\drivers_nrf\delay;..\..\..\..\..\..\components\libraries\trace;..\..\..\..\..\..\components\drivers_nrf\pstorage;..\..\..\..\..\..\components\drivers_nrf\twi_master\incubated;..\..\..\..\..\..\components\drivers_nrf\twi_master\incubated\config;..\..\..\..\..\..\components\drivers_nrf\spi_master;..\..\..\..\..\..\components\ring;..\..\..\..\..\..\components\drivers_ext\LSM6DS3</IncludePath>
             </VariousControls>
@@ -1861,6 +1861,11 @@
               <FileName>lcd.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\components\ring\lcd.c</FilePath>
+            </File>
+            <File>
+              <FileName>spi_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\components\ring\spi_flash.c</FilePath>
             </File>
           </Files>
         </Group>
@@ -3726,6 +3731,11 @@
               <FileName>lcd.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\components\ring\lcd.c</FilePath>
+            </File>
+            <File>
+              <FileName>spi_flash.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\components\ring\spi_flash.c</FilePath>
             </File>
           </Files>
         </Group>

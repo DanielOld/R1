@@ -90,7 +90,7 @@ static void init_LSM6DS3_ACC(void)
   if(response==MEMS_ERROR) while(1); //manage here comunication error
 #else
   /* Set ACC ODR  */
-  response = LSM6DS3_ACC_GYRO_W_ODR_XL(LSM6DS3_ACC_GYRO_ODR_XL_104Hz);
+  response = LSM6DS3_ACC_GYRO_W_ODR_XL(LSM6DS3_ACC_GYRO_ODR_XL_416Hz);
   if(response==MEMS_ERROR) while(1); //manage here comunication error
   
   /* Set ACC full scale */
@@ -287,6 +287,7 @@ int sensor_init(void)
   /* Test Wakup */
   // Loop_Test_Wakeup();
 #endif
+#if 0
 {
     int i;
 	static uint16_t m_data[256];
@@ -301,6 +302,7 @@ int sensor_init(void)
     }
 	
 }
+#endif
   return 0;
 }
 

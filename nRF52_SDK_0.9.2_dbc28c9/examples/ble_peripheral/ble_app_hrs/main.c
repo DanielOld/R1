@@ -986,9 +986,9 @@ int main(void)
     sensor_simulator_init();
     conn_params_init();
 #if defined(__RING_SUPPORT__)
+	spi_flash_init();
     sensor_init();
 	lcd_init();
-	spi_flash_init();
 #endif
 
     // Start execution.

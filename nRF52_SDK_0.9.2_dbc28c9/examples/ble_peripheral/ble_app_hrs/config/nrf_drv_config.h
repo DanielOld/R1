@@ -127,9 +127,9 @@
 #if (SPI0_ENABLED == 1)
 #define SPI0_USE_EASY_DMA 1
 
-#define SPI0_CONFIG_SCK_PIN         2
-#define SPI0_CONFIG_MOSI_PIN        3
-#define SPI0_CONFIG_MISO_PIN        4
+#define SPI0_CONFIG_SCK_PIN         9
+#define SPI0_CONFIG_MOSI_PIN        10
+#define SPI0_CONFIG_MISO_PIN        0xff
 #define SPI0_CONFIG_IRQ_PRIORITY    APP_IRQ_PRIORITY_LOW
 
 #define SPI0_INSTANCE_INDEX 0
@@ -138,10 +138,10 @@
 #define SPI1_ENABLED 1
 
 #if (SPI1_ENABLED == 1)
-#define SPI1_USE_EASY_DMA 0
+#define SPI1_USE_EASY_DMA 1
 
 #define SPI1_CONFIG_SCK_PIN         2
-#define SPI1_CONFIG_MOSI_PIN        3
+#define SPI1_CONFIG_MOSI_PIN        5
 #define SPI1_CONFIG_MISO_PIN        4
 #define SPI1_CONFIG_IRQ_PRIORITY    APP_IRQ_PRIORITY_LOW
 

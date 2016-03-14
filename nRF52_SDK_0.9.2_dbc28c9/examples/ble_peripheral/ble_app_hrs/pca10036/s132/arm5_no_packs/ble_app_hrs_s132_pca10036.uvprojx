@@ -178,7 +178,7 @@
           </Flash1>
           <bUseTDR>1</bUseTDR>
           <Flash2>Segger\JL2CM3.dll</Flash2>
-          <Flash3></Flash3>
+          <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
           <pFcarmGrp></pFcarmGrp>
@@ -388,7 +388,7 @@
             <useXO>0</useXO>
             <VariousControls>
               <MiscControls></MiscControls>
-              <Define> BLE_STACK_SUPPORT_REQD BOARD_PCA10036 CONFIG_GPIO_AS_PINRESET S132 NRF52 SOFTDEVICE_PRESENT SWI_DISABLE0</Define>
+              <Define>BLE_STACK_SUPPORT_REQD BOARD_PCA10036 CONFIG_GPIO_AS_PINRESET S132 NRF52 SOFTDEVICE_PRESENT SWI_DISABLE0</Define>
               <Undefine></Undefine>
               <IncludePath></IncludePath>
             </VariousControls>

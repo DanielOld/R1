@@ -52,6 +52,7 @@
 #include "lcd.h"
 #include "spi_flash.h"
 #endif
+#include "spi_flash.h"
 
 #define IS_SRVC_CHANGED_CHARACT_PRESENT  1                                          /**< Include or not the service_changed characteristic. if not enabled, the server's database cannot be changed for the lifetime of the device*/
 

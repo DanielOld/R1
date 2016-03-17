@@ -42,6 +42,7 @@ static void spi_flash_addr(u32 addr, u8 *cmd)
 
 static int spi_flash_cmd_wait_ready(struct spi_flash *flash, unsigned long timeout)
 {
+#if 0
 	u8 cmd;
 	u8 status[3];
 
@@ -58,6 +59,10 @@ static int spi_flash_cmd_wait_ready(struct spi_flash *flash, unsigned long timeo
 	} while(timeout--);
 
 	return -1;
+#else
+		nrf_delay_ms(100);
+    return 0;
+#endif
 }
 
 
@@ -171,6 +176,7 @@ static int spi_flash_probe(struct spi_flash *flash, const char *name)
 	                        &cmd, 1, idcode, 4) != NRF_SUCCESS) {
 		return -1;
 	}
+	WAIT_FOR_TRANSFER_COMPLETED;
 	if(idcode[1] != SPI_FLASH_WINBOND_IDCODE0) {
 		return -1;
 	}

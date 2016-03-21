@@ -70,7 +70,7 @@
 #define MAX_BATTERY_LEVEL                100                                        /**< Maximum simulated battery level. */
 #define BATTERY_LEVEL_INCREMENT          1                                          /**< Increment between each simulated battery level measurement. */
 #if defined(__RING_SUPPORT__)
-#define HEART_RATE_MEAS_INTERVAL         APP_TIMER_TICKS(10, APP_TIMER_PRESCALER) /**< Heart rate measurement interval (ticks). */
+#define HEART_RATE_MEAS_INTERVAL         APP_TIMER_TICKS(8, APP_TIMER_PRESCALER) /**< Heart rate measurement interval (ticks). */
 #else
 #define HEART_RATE_MEAS_INTERVAL         APP_TIMER_TICKS(1000, APP_TIMER_PRESCALER) /**< Heart rate measurement interval (ticks). */
 #endif
@@ -203,6 +203,7 @@ uint32_t ble_sensor_data_send(ble_hrs_t * p_hrs)
 {
     uint32_t err_code;
     uint8_t sensor_data[20];
+	uint8_t tmp;
 
     // Send value if connected and notifying
     if (p_hrs->conn_handle != BLE_CONN_HANDLE_INVALID)
@@ -212,6 +213,15 @@ uint32_t ble_sensor_data_send(ble_hrs_t * p_hrs)
         ble_gatts_hvx_params_t hvx_params;
 
         sensor_test(sensor_data);
+		tmp = sensor_data[1];
+		sensor_data[1] = sensor_data[0];
+		sensor_data[0] = tmp;
+		tmp = sensor_data[3];
+		sensor_data[3] = sensor_data[2];
+		sensor_data[2] = tmp;
+		tmp = sensor_data[5];
+		sensor_data[5] = sensor_data[4];
+		sensor_data[4] = tmp;
 
         len     = 6;
         hvx_len = len;
@@ -987,9 +997,9 @@ int main(void)
     sensor_simulator_init();
     conn_params_init();
 #if defined(__RING_SUPPORT__)
-	spi_flash_init();
+	//spi_flash_init();
     sensor_init();
-	lcd_init();
+	//lcd_init();
 #endif
 
     // Start execution.

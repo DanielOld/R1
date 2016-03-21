@@ -94,7 +94,7 @@ static void init_LSM6DS3_ACC(void)
   if(response==MEMS_ERROR) while(1); //manage here comunication error
   
   /* Set ACC full scale */
-  response = LSM6DS3_ACC_GYRO_W_FS_XL(LSM6DS3_ACC_GYRO_FS_XL_2g);
+  response = LSM6DS3_ACC_GYRO_W_FS_XL(LSM6DS3_ACC_GYRO_FS_XL_4g);
   if(response==MEMS_ERROR) while(1); //manage here comunication error
 
   /* BDU Enable */

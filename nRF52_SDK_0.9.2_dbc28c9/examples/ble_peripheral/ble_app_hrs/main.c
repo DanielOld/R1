@@ -51,6 +51,7 @@
 #include "sensor_test.h"
 #include "lcd.h"
 #include "spi_flash.h"
+#include "button.h"
 #endif
 #include "spi_flash.h"
 
@@ -997,9 +998,10 @@ int main(void)
     sensor_simulator_init();
     conn_params_init();
 #if defined(__RING_SUPPORT__)
-	//spi_flash_init();
+     btn_init();
+	  spi_flash_init();
     sensor_init();
-	//lcd_init();
+	  lcd_init();
 #endif
 
     // Start execution.

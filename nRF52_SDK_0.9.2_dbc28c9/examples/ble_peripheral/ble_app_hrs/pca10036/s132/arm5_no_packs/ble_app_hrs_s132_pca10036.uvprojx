@@ -1826,6 +1826,11 @@
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\components\ring\spi_flash.c</FilePath>
             </File>
+            <File>
+              <FileName>button.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\components\ring\button.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -3654,6 +3659,11 @@
               <FileName>spi_flash.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\..\..\..\..\components\ring\spi_flash.c</FilePath>
+            </File>
+            <File>
+              <FileName>button.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\..\..\..\..\components\ring\button.c</FilePath>
             </File>
           </Files>
         </Group>

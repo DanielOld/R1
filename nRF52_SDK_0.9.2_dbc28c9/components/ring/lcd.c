@@ -10,12 +10,23 @@
 
 #include "lcd.h"
 
+#define LCD_ENABLE_PIN        22
 #define LCD_RESET_PIN_NUMBER  6
 #define LCD_SPI_A0_PIN        7
 #define LCD_SPI_SCK_PIN       9
 #define LCD_SPI_MOSI_PIN      10
 #define LCD_SPI_MISO_PIN      NRF_DRV_SPI_PIN_NOT_USED
 #define LCD_SPI_SS_PIN        8
+
+#define LCD_ENABLE_PIN_CONFIG() do { \
+        NRF_GPIO->PIN_CNF[LCD_ENABLE_PIN] = (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos) \
+        |(GPIO_PIN_CNF_DRIVE_S0S1 << GPIO_PIN_CNF_DRIVE_Pos)    \
+        |(GPIO_PIN_CNF_PULL_Pullup << GPIO_PIN_CNF_PULL_Pos)  \
+        |(GPIO_PIN_CNF_INPUT_Disconnect << GPIO_PIN_CNF_INPUT_Pos) \
+        |(GPIO_PIN_CNF_DIR_Output << GPIO_PIN_CNF_DIR_Pos);  \
+} while (0)
+
+#define LCD_ENABLE_HIGH()   do { NRF_GPIO->OUTSET = (1UL << LCD_ENABLE_PIN); } while(0)
 
 #define LCD_RESET_PIN_CONFIG() do { \
         NRF_GPIO->PIN_CNF[LCD_RESET_PIN_NUMBER] = (GPIO_PIN_CNF_SENSE_Disabled << GPIO_PIN_CNF_SENSE_Pos) \
@@ -102,8 +113,9 @@ static void write_d(uint8_t data)
 void lcd_init(void)
 {
 	lcd_spi_master_init();
+    LCD_ENABLE_PIN_CONFIG();
+	LCD_ENABLE_HIGH();
 	LCD_A0_PIN_CONFIG();
-
 	LCD_RESET_PIN_CONFIG();
 	LCD_RESET_LOW();
 	nrf_delay_ms(100);
@@ -129,7 +141,7 @@ void lcd_init(void)
 	write_d(0x00);
 	write_c(0xE5); /*DISPLAY MODE CONTROL*/
 	//write_d(0x00);
-	write_d(0x80); /*Swap RGB*/
+	write_d(0x00); /*Do not swap RGB*/
 	write_c(0x0D); /* CPU IF */
 	write_d(0x00);
 	write_c(0x1D); /* Set MEMORY_WRITE/READ */

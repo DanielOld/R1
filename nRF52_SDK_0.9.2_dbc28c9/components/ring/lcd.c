@@ -264,11 +264,11 @@ void lcd_display(uint8_t startx,
 		}
 	}
 #else
-	uint32_t i;
+	int32_t i;
 
 	write_c(0x08); /*memory access*/
-	for(i=0; i<LCD_HIGHT; i++) {
-		lcd_memory_access(m_lcd_buffer, LCD_WITH*2);
+	for(i=LCD_HIGHT-1; i>=0; i--) {
+		lcd_memory_access(m_lcd_buffer+i*LCD_WITH*2, LCD_WITH*2);
 	}
 #endif
 }

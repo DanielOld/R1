@@ -141,7 +141,7 @@ void lcd_init(void)
 	write_d(0x00);
 	write_c(0xE5); /*DISPLAY MODE CONTROL*/
 	//write_d(0x00);
-	write_d(0x00); /*Do not swap RGB*/
+	write_d(0x00); /*Swap RGB*/
 	write_c(0x0D); /* CPU IF */
 	write_d(0x00);
 	write_c(0x1D); /* Set MEMORY_WRITE/READ */
@@ -188,7 +188,7 @@ void lcd_init(void)
 	write_d(0x5F);
 	write_c(0x02); /*DISPLAY ON*/
 	write_d(0x01);
-	lcd_clear(0xf800);
+	lcd_clear(0x07ff);
 }
 
 void lcd_sleep(void)
@@ -276,10 +276,17 @@ void lcd_display(uint8_t startx,
 static void lcd_clear(uint16_t color)
 {
 	uint32_t i;
+	uint32_t j;
+	uint16_t tmp;
 
+	tmp = 0;
+	for(j=0; j<16; j++)
+	{
+		if((color>>j)&0x01) tmp |=1<<(15-j);
+	}
 	for(i=0; i<sizeof(m_lcd_buffer); i=i+2) {
-		m_lcd_buffer[i] = color & 0xff;
-		m_lcd_buffer[i+1] = (color>>8) & 0xff;
+		m_lcd_buffer[i+1] = tmp & 0xff;
+		m_lcd_buffer[i] = (tmp>>8) & 0xff;
 	}
 	lcd_display(0, LCD_WITH-1, 0, LCD_HIGHT-1);
 }
